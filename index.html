@@ -27,24 +27,25 @@
     </div>
 
     <script>
-        const html5QrCode = new Html5Qrcode("reader");
-        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    const html5QrCode = new Html5Qrcode("reader");
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-        html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
-            // 1. Stop the scanner to focus on audio
-            html5QrCode.stop();
-            
-            // 2. Show the info UI
-            document.getElementById('reader').style.display = 'none';
-            document.getElementById('info-box').style.display = 'block';
-            document.getElementById('exhibit-name').innerText = "Playing: " + decodedText;
+    html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
+        // 1. Stop the camera
+        html5QrCode.stop();
+        
+        // 2. Prepare the UI
+        document.getElementById('reader').style.display = 'none';
+        document.getElementById('info-box').style.display = 'block';
+        document.getElementById('exhibit-name').innerText = "Found: " + decodedText;
 
-            // 3. Play the matching audio file
-            // Note: decodedText should match your filename (e.g. "monalisa")
-            const audioPlayer = document.getElementById('museumAudio');
-            audioPlayer.src = `audio/${decodedText}.mp3`; 
-            audioPlayer.play().catch(e => alert("Please tap 'Play' to hear the audio. Browsers sometimes block auto-play."));
-        });
-    </script>
+        // 3. Set the audio source but DON'T autoplay yet
+        const audioPlayer = document.getElementById('museumAudio');
+        audioPlayer.src = `audio/${decodedText}.mp3`; 
+        
+        // 4. Change the status message to ask for a tap
+        document.getElementById('status-msg').innerText = "Ready! Tap Play below to listen.";
+    });
+</script>
 </body>
 </html>

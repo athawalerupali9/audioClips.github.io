@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Audio Guide</title>
+    <script src="https://unpkg.com"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #fdfdfd; padding: 20px; }
+        #reader { width: 100%; max-width: 450px; margin: auto; border: 2px solid #ccc; border-radius: 12px; }
+        #info-box { margin-top: 20px; padding: 15px; border-radius: 8px; background: #eee; display: none; }
+        .btn { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>🏛️ Museum Audio Guide</h1>
+    <p>Scan the QR code next to the exhibit to hear its story.</p>
+    
+    <div id="reader"></div>
+    
+    <div id="info-box">
+        <h2 id="exhibit-name">Exhibit Name</h2>
+        <audio id="museumAudio" controls autoplay></audio>
+        <br><br>
+        <button class="btn" onclick="location.reload()">Scan Next Exhibit</button>
+    </div>
+
+    <script>
+        const html5QrCode = new Html5Qrcode("reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+        html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
+            // 1. Stop the scanner to focus on audio
+            html5QrCode.stop();
+            
+            // 2. Show the info UI
+            document.getElementById('reader').style.display = 'none';
+            document.getElementById('info-box').style.display = 'block';
+            document.getElementById('exhibit-name').innerText = "Playing: " + decodedText;
+
+            // 3. Play the matching audio file
+            // Note: decodedText should match your filename (e.g. "monalisa")
+            const audioPlayer = document.getElementById('museumAudio');
+            audioPlayer.src = `audio/${decodedText}.mp3`; 
+            audioPlayer.play().catch(e => alert("Please tap 'Play' to hear the audio. Browsers sometimes block auto-play."));
+        });
+    </script>
+</body>
+</html>
